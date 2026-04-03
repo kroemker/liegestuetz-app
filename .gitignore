@@ -1,0 +1,26 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Firebase - NEVER commit your real google-services.json to a public repo
+# Keep it locally or use CI secrets to inject it
+app/google-services.json
+
+# Generated files
+bin/
+gen/
+out/
+
+# Kotlin
+*.class
+
+# Node (Cloud Functions)
+functions/node_modules/
+functions/lib/

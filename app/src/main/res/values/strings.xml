@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Liegestuetz</string>
+    <string name="challenge_mark_complete">Mark as Complete</string>
+    <string name="challenge_completed_today">Completed today!</string>
+    <string name="notification_channel_completions_name">Challenge Completions</string>
+    <string name="notification_channel_completions_desc">Notifications when friends complete their daily pushups</string>
+    <string name="notification_channel_reminders_name">Daily Reminders</string>
+    <string name="notification_channel_reminders_desc">Daily reminders to complete your pushup goal</string>
+</resources>
