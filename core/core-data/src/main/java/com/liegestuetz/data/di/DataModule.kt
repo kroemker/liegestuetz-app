@@ -1,18 +1,32 @@
 package com.liegestuetz.data.di
 
+import com.liegestuetz.data.repository.ChallengeRepositoryImpl
+import com.liegestuetz.data.repository.CompletionRepositoryImpl
+import com.liegestuetz.data.repository.UserRepositoryImpl
+import com.liegestuetz.domain.repository.AuthRepository
+import com.liegestuetz.domain.repository.ChallengeRepository
+import com.liegestuetz.domain.repository.CompletionRepository
+import com.liegestuetz.domain.repository.UserRepository
+import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-/**
- * Binds repository interfaces (from :core:core-domain) to their implementations.
- *
- * Populated in Phase 2–4 as each repository implementation is written:
- *
- *   Phase 2: UserRepositoryImpl, AuthRepository bindings
- *   Phase 3: ChallengeRepositoryImpl binding
- *   Phase 4: CompletionRepositoryImpl binding
- */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataModule
+abstract class DataModule {
+
+    // UserRepositoryImpl implements both AuthRepository and UserRepository
+    @Binds @Singleton
+    abstract fun bindAuthRepository(impl: UserRepositoryImpl): AuthRepository
+
+    @Binds @Singleton
+    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds @Singleton
+    abstract fun bindChallengeRepository(impl: ChallengeRepositoryImpl): ChallengeRepository
+
+    @Binds @Singleton
+    abstract fun bindCompletionRepository(impl: CompletionRepositoryImpl): CompletionRepository
+}

@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+    function isParticipant(challengeId) {
+      return isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/challenges/$(challengeId)).data.participantIds;
+    }
+
+    // ── users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      // Only the owning user may write their own document (FCM token, display name)
+      allow write: if isOwner(userId);
+    }
+
+    // ── challenges ────────────────────────────────────────────────────────────
+    match /challenges/{challengeId} {
+      // Any signed-in user can query challenges by inviteCode (to join)
+      allow read: if isSignedIn();
+      // Only a participant may update (e.g., joining adds them to participantIds)
+      allow create: if isSignedIn();
+      allow update: if isParticipant(challengeId);
+      // Only the creator can delete / cancel
+      allow delete: if isSignedIn() &&
+        request.auth.uid == resource.data.creatorId;
+
+      // ── participants sub-collection ─────────────────────────────────────────
+      match /participants/{participantId} {
+        allow read: if isParticipant(challengeId);
+        // A user may only write their own participant document
+        allow write: if isOwner(participantId);
+        // Cloud Functions update totalCompletions / currentStreak via admin SDK (bypasses rules)
+      }
+
+      // ── completions sub-collection ─────────────────────────────────────────
+      match /completions/{completionId} {
+        allow read: if isParticipant(challengeId);
+        // Completion doc ID is "{userId}_{date}"; only that user may write it
+        allow create, update: if isSignedIn() &&
+          request.auth.uid == request.resource.data.userId;
+        allow delete: if false; // completions are permanent
+      }
+    }
+  }
+}

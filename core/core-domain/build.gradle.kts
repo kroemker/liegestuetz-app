@@ -17,6 +17,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
 
+    // javax.inject allows @Inject constructor in pure-JVM domain classes
+    // without pulling in Android or Hilt as a compile dependency.
+    compileOnly(libs.javax.inject)
+
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk.core)

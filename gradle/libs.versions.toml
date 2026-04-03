@@ -20,6 +20,7 @@ coil = "2.7.0"
 turbine = "1.2.0"
 mockk = "1.13.14"
 junitJupiter = "5.11.3"
+javaxInject = "1"
 junitAndroid = "1.2.1"
 espresso = "3.6.1"
 
@@ -83,6 +84,7 @@ mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroid" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
