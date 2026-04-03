@@ -9,9 +9,10 @@
 .cxx
 local.properties
 
-# Firebase - NEVER commit your real google-services.json to a public repo
-# Keep it locally or use CI secrets to inject it
-app/google-services.json
+# Do NOT ignore google-services.json — the placeholder file is safe to commit.
+# Replace it with your real file from the Firebase console (it is gitignored
+# in your personal clone via local .git/info/exclude if you prefer).
+# google-services.json
 
 # Generated files
 bin/

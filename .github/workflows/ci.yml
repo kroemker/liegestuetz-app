@@ -23,20 +23,33 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      # Install Gradle 8.10 explicitly so we can generate the wrapper binary.
+      # The wrapper properties file is committed but the gradlew script and
+      # gradle-wrapper.jar are not (they are binary/generated). This step
+      # installs the Gradle CLI and the next step writes the wrapper files.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.10'
 
-      # Inject the placeholder google-services.json so the build doesn't fail.
-      # In a real CI pipeline, store the real file as a repository secret:
-      #   Settings > Secrets > Actions > GOOGLE_SERVICES_JSON
-      # Then replace this step with:
-      #   echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > app/google-services.json
-      - name: Verify google-services.json exists
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --gradle-version 8.10
+        working-directory: ${{ github.workspace }}
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      # Inject google-services.json from repository secret when available,
+      # otherwise fall back to the committed placeholder (which lets the
+      # build succeed but Firebase will not work at runtime).
+      - name: Inject google-services.json
         run: |
-          if [ ! -f "app/google-services.json" ]; then
-            echo "ERROR: app/google-services.json is missing."
-            echo "Add the file locally or store it as a GitHub secret."
-            exit 1
+          if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+            echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
+            echo "✅ Injected real google-services.json from secret"
+          else
+            echo "⚠️  No GOOGLE_SERVICES_JSON secret found — using committed placeholder"
+            echo "   Firebase will not work at runtime but the build will succeed."
           fi
 
       - name: Lint

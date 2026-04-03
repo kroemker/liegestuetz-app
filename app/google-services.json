@@ -1,0 +1,35 @@
+{
+  "_comment": "PLACEHOLDER - Replace this file with your real google-services.json from the Firebase console (Project Settings > General > Your apps > Download google-services.json). This placeholder allows the project to compile but Firebase will NOT work at runtime.",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "liegestuetz-app-placeholder",
+    "storage_bucket": "liegestuetz-app-placeholder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.liegestuetz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "000000000000-placeholder.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_YOUR_FIREBASE_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

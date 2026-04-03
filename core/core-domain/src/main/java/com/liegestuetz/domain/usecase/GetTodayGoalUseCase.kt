@@ -3,6 +3,7 @@ package com.liegestuetz.domain.usecase
 import com.liegestuetz.domain.model.Challenge
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
+import javax.inject.Inject
 
 /**
  * Pure function — no I/O, no dependencies.
@@ -16,7 +17,7 @@ import kotlinx.datetime.daysUntil
  *   Day 1:             15
  *   Day 6:             40
  */
-class GetTodayGoalUseCase {
+class GetTodayGoalUseCase @Inject constructor() {
 
     operator fun invoke(challenge: Challenge, date: LocalDate): Int? {
         val dayIndex = challenge.startDate.daysUntil(date)
