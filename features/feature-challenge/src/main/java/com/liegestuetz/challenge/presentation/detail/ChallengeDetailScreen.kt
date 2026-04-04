@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -53,7 +52,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.liegestuetz.common.extensions.today
 import com.liegestuetz.domain.model.ChallengeStatus
+import com.liegestuetz.domain.model.Completion
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.until
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -268,13 +269,13 @@ private fun ParticipantListItem(row: ParticipantRow, modifier: Modifier = Modifi
 
 @Composable
 private fun CompletionHeatmap(
-    completions: List<com.liegestuetz.domain.model.Completion>,
-    challengeStartDate: kotlinx.datetime.LocalDate,
+    completions: List<Completion>,
+    challengeStartDate: LocalDate,
     durationDays: Int,
     modifier: Modifier = Modifier,
 ) {
     val completedDates = completions.map { it.date }.toSet()
-    val today = today()
+    val today = LocalDate.today()
     val endDay = minOf(durationDays - 1, challengeStartDate.until(today, DateTimeUnit.DAY))
     val startDay = maxOf(0, endDay - 13)
     val days = (startDay..endDay).map { i ->

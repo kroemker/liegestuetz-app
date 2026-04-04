@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,10 +35,8 @@ class LiegestuetzMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         serviceScope.launch {
-            val userId = authRepository.currentUser().collect { user ->
-                user?.uid?.let { uid ->
-                    updateFcmTokenUseCase(uid, token)
-                }
+            authRepository.currentUser().firstOrNull()?.uid?.let { uid ->
+                updateFcmTokenUseCase(uid, token)
             }
         }
     }

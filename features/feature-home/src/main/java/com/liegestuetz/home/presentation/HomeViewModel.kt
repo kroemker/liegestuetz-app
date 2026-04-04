@@ -6,7 +6,7 @@ import com.liegestuetz.common.Result
 import com.liegestuetz.common.extensions.today
 import com.liegestuetz.domain.model.Challenge
 import com.liegestuetz.domain.repository.AuthRepository
-import com.liegestuetz.domain.repository.CompletionRepository
+import com.liegestuetz.domain.repository.ChallengeRepository
 import com.liegestuetz.domain.usecase.GetTodayGoalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,6 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.until
 import javax.inject.Inject
-import com.liegestuetz.domain.repository.ChallengeRepository
 
 data class ChallengeCardState(
     val challenge: Challenge,
@@ -39,7 +38,6 @@ data class HomeUiState(
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val challengeRepository: ChallengeRepository,
-    private val completionRepository: CompletionRepository,
     private val authRepository: AuthRepository,
     private val getTodayGoalUseCase: GetTodayGoalUseCase,
 ) : ViewModel() {
@@ -48,7 +46,10 @@ class HomeViewModel @Inject constructor(
 
     val uiState: StateFlow<HomeUiState> = authRepository.currentUser()
         .flatMapLatest { user ->
-            if (user == null) return@flatMapLatest flowOf(HomeUiState(isLoading = false))
+            if (user == null) {
+                // Not signed in — emit an empty success so the when below stays on Result<*>
+                return@flatMapLatest flowOf<Result<List<Challenge>>>(Result.Success(emptyList()))
+            }
             challengeRepository.getChallengesForUser(user.uid)
         }
         .combine(_errorMessage) { challengesResult, error ->
@@ -63,12 +64,10 @@ class HomeViewModel @Inject constructor(
                     val cards = challengesResult.data.map { challenge ->
                         val dayIndex = challenge.startDate.until(today, DateTimeUnit.DAY)
                         val goal = getTodayGoalUseCase(challenge, today)
-                        // Check completion status from a snapshot listener would be ideal;
-                        // here we derive it from completionRepository on initial load.
                         ChallengeCardState(
                             challenge = challenge,
                             todayGoal = goal,
-                            completedToday = false, // Updated per-card by ChallengeDetailScreen
+                            completedToday = false,
                             dayIndex = dayIndex.coerceAtLeast(0),
                         )
                     }.sortedByDescending { it.challenge.createdAt }

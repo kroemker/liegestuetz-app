@@ -50,6 +50,16 @@ android {
     packaging {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
+
+    lint {
+        abortOnError = true
+        warningsAsErrors = false
+        // Disable checks that produce false positives with Compose or placeholder configs
+        disable += "MissingPermission"
+        disable += "UnusedResources"
+        xmlReport = true
+        htmlReport = true
+    }
 }
 
 dependencies {
