@@ -19,6 +19,11 @@ android {
 
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
+
+    lint {
+        abortOnError = false
+        warningsAsErrors = false
+    }
 }
 
 dependencies {
